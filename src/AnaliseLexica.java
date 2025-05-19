@@ -1,63 +1,98 @@
 import java.io.*;
 
-enum TokenType{ NUM,SOMA, MULT,APar,FPar, EOF}
+enum TokenType {
+	NUM, SOMA, MULT, APar, FPar, EOF
+}
 
-class Token{
-  char lexema;
-  TokenType token;
+class Token {
+	String lexema;
+	TokenType tToken;
 
- Token (char l, TokenType t)
- 	{ lexema=l;token = t;}	
+	Token(String l, TokenType t) {
+		lexema = l;
+		tToken = t;
+	}
 
 }
 
 class AnaliseLexica {
-
 	BufferedReader arquivo;
 
-	AnaliseLexica(String a) throws Exception
-	{
-		
-	 	this.arquivo = new BufferedReader(new FileReader(a));
-		
+	AnaliseLexica(String a) throws Exception {
+		this.arquivo = new BufferedReader(new FileReader(a));
 	}
 
-	Token getNextToken() throws Exception
-	{	
-		Token token;
-		int eof = -1;
+	/**
+	 * Reads and returns the next non-whitespace character from the input stream.
+	 * Skips over newline ('\n'), space (' '), tab ('\t'), and carriage return
+	 * ('\r') characters.
+	 *
+	 * @return the integer value of the next non-whitespace character read from the
+	 *         input stream,
+	 *         or -1 if the end of the stream is reached.
+	 * @throws Exception if an I/O error occurs while reading from the input stream.
+	 */
+	private int getNextChar() throws Exception {
 		char currchar;
-		int currchar1;
+		int currcharI;
 
-			do{
-				currchar1 =  arquivo.read();
-				currchar = (char) currchar1;
-			} while (currchar == '\n' || currchar == ' ' || currchar =='\t' || currchar == '\r');
-			
-			if(currchar1 != eof && currchar1 !=10)
-			{
-								
-	
-				if (currchar >= '0' && currchar <= '9')
-					return (new Token (currchar, TokenType.NUM));
-				else
-					switch (currchar){
-						case '(':
-							return (new Token (currchar,TokenType.APar));
-						case ')':
-							return (new Token (currchar,TokenType.FPar));
-						case '+':
-							return (new Token (currchar,TokenType.SOMA));
-						case '*':
-							return (new Token (currchar,TokenType.MULT));
-						
-						default: throw (new Exception("Caractere inválido: " + ((int) currchar)));
+		do {
+			currcharI = arquivo.read();
+			currchar = (char) currcharI;
+		} while (currchar == '\n' || currchar == ' ' || currchar == '\t' || currchar == '\r');
+
+		return currcharI;
+	}
+
+	Token getNextToken() throws Exception {
+		final int EOF = -1;
+
+		int currchar1 = getNextChar();
+		char currchar = (char) currchar1;
+
+		if (currchar1 != EOF && currchar1 != 10) {
+			if (currchar >= '0' && currchar <= '9') {
+				int nextCharI;
+				char nextChar;
+
+				StringBuilder num = new StringBuilder(Character.toString(currchar));
+
+				while (true) {
+					// Pode ler no máximo mais um caracter sem perder essa marcação
+					// Nós vamos só ler 1, então tá ótimo
+					arquivo.mark(1);
+
+					nextCharI = getNextChar();
+					nextChar = (char) nextCharI;
+
+					if (Character.isDigit(nextChar)) {
+						num.append(nextChar);
+					} else {
+						arquivo.reset();
+						break;
 					}
-			}
+				}
 
-			arquivo.close();
-			
-		return (new Token(currchar,TokenType.EOF));
-		
+				return (new Token(num.toString(), TokenType.NUM));
+
+			} else
+				switch (currchar) {
+					case '(':
+						return (new Token(Character.toString(currchar), TokenType.APar));
+					case ')':
+						return (new Token(Character.toString(currchar), TokenType.FPar));
+					case '+':
+						return (new Token(Character.toString(currchar), TokenType.SOMA));
+					case '*':
+						return (new Token(Character.toString(currchar), TokenType.MULT));
+
+					default:
+						throw (new Exception("Caractere inválido: " + ((int) currchar)));
+				}
+		}
+
+		arquivo.close();
+
+		return (new Token(Character.toString(currchar), TokenType.EOF));
 	}
 }

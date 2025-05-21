@@ -1,7 +1,7 @@
 import java.io.*;
 
 enum TokenType {
-	NUM, SOMA, MULT, APar, FPar, EOF
+	NUM, SOMA, SUB, MULT, DIV, APar, FPar, EOF
 }
 
 class Token {
@@ -16,10 +16,10 @@ class Token {
 }
 
 class AnaliseLexica {
-	BufferedReader arquivo;
+	private BufferedReader arquivo;
 
-	AnaliseLexica(String a) throws Exception {
-		this.arquivo = new BufferedReader(new FileReader(a));
+	AnaliseLexica(String filePath) throws Exception {
+		this.arquivo = new BufferedReader(new FileReader(filePath));
 	}
 
 	/**
@@ -83,8 +83,12 @@ class AnaliseLexica {
 						return (new Token(Character.toString(currchar), TokenType.FPar));
 					case '+':
 						return (new Token(Character.toString(currchar), TokenType.SOMA));
+					case '-':
+						return (new Token(Character.toString(currchar), TokenType.SUB));
 					case '*':
 						return (new Token(Character.toString(currchar), TokenType.MULT));
+					case '/':
+						return (new Token(Character.toString(currchar), TokenType.DIV));
 
 					default:
 						throw (new Exception("Caractere inválido: " + ((int) currchar)));

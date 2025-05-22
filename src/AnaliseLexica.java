@@ -12,7 +12,6 @@ class Token {
 		lexema = l;
 		tToken = t;
 	}
-
 }
 
 class AnaliseLexica {

@@ -10,7 +10,7 @@ class Parser {
 
 		Token tokenCorrente = scanner.getNextToken();
 		if (tokenCorrente.tToken != TokenType.EOF)
-			throw (new Exception("Estava esperando: EOF"));
+			throw (new Exception("Estava esperando EOF"));
 
 		return resultado;
 

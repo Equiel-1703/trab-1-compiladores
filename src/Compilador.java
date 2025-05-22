@@ -19,7 +19,7 @@ class Compilador {
 		} catch (FileNotFoundException e) {
 			System.out.println("ERRO: Arquivo '" + args[0] + "' não encontrado.");
 		} catch (Exception e) {
-			System.out.println("ERRO:\n" + e);
+			System.out.println("ERRO:" + e.getMessage());
 		}
 	}
 }
